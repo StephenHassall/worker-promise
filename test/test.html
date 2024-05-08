@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test Worker Promise Library</title>
+  <script type="module" src="run.js"></script>
+</head>
+<body>
+  <p>Look at console for testing progress.</p>
+
+  <p>
+    Perform a memory test. This transfers 100 promises to the worker, one by one.
+    Check the memory used and make sure it is not leaking any.
+    <br>
+    <button id="one-by-one">One By One</button>
+  </p>
+
+  <p>
+    Perform a memory test. This transfers 100 promises to the worker, all at the same time, in parallel.
+    Check the memory used and make sure it is not leaking any.
+    <br>
+    <button id="parallel">Parallel</button>
+  </p>
+
+<script type="module">
+  import MemoryControl from "./memory-control.js";
+
+  // Get elements
+  const oneByOneElement = document.getElementById('one-by-one');
+  const parallelElement = document.getElementById('parallel');
+
+  // Add click events
+  oneByOneElement.addEventListener('click', () => {
+    MemoryControl.testOneByOne();
+  });
+
+  parallelElement.addEventListener('click', () => {
+    MemoryControl.testParallel();
+  });
+</script>
+</body>
+</html>
