@@ -127,6 +127,15 @@ export class WorkerLink {
         message.name = name;
         message.data = data;
 
+        // If transferable list exists
+        if (transferableList !== undefined) {
+            // For each tranferable
+            for (let index = 0; index < transferableList.length; index++) {
+                // Add to message data
+                message['transferable' + index.toString()] = transferableList[index];
+            }
+        }
+
         // Create the promise
         const promise = new Promise((resolve, reject) => {
             // Set resolve and reject functions
@@ -143,10 +152,10 @@ export class WorkerLink {
         // If control thread
         if (this._isControlThread === true) {
             // Post the message to the worker thread
-            this._worker.postMessage(message);
+            this._worker.postMessage(message, transferableList);
         } else {
             // Post message back to control thread
-            self.postMessage(message);
+            self.postMessage(message, transferableList);
         }
 
         // Return the promise object
@@ -180,13 +189,22 @@ export class WorkerLink {
         message.response = response;
         message.data = data;
 
+        // If transferable list exists
+        if (transferableList !== undefined) {
+            // For each tranferable
+            for (let index = 0; index < transferableList.length; index++) {
+                // Add to message data
+                message['transferable' + index.toString()] = transferableList[index];
+            }
+        }
+
         // If control thread
         if (this._isControlThread === true) {
             // Post the message to the worker thread
-            this._worker.postMessage(message);
+            this._worker.postMessage(message, transferableList);
         } else {
             // Post message back to control thread
-            self.postMessage(message);
+            self.postMessage(message, transferableList);
         }
     }
 
@@ -194,9 +212,36 @@ export class WorkerLink {
      * Message event.
      * @param {Object} event Information about the message received from the other thread.
      */
-    _message(event) {
+    _message(event, test) {
         // Set message
         const message = event.data;
+
+        // Create transferable list
+        const transferableList = [];
+
+        // If transferable members
+        if (message.transferable0) {
+            // Set index
+            let index = 0;
+
+            // Continue until done
+            while (true) {
+                // Create property name
+                const propertyName = 'transferable' + index.toString();
+
+                // If the property does not exist
+                if (message.hasOwnProperty(propertyName) === false) break;
+
+                // Add the transferable into the list
+                transferableList.push(message[propertyName]);
+
+                // Delete the property from the data
+                delete message[propertyName];
+
+                // Increase the index
+                index++;
+            }
+        }
 
         // If type is send message
         if (message.type === 0) {
@@ -213,15 +258,17 @@ export class WorkerLink {
             }
 
             // Call the executor
-            receive(message.data,
-                (responseData) => {
+            receive(
+                (responseData, responseTransferableList) => {
                     // Post resolve reply 
-                    this._postReply(message.id, 1, responseData);
+                    this._postReply(message.id, 1, responseData, responseTransferableList);
                 },
                 (rejectData) => {
                     // Post reject reply 
                     this._postReply(message.id, 2, rejectData);
-                }
+                },
+                message.data,
+                transferableList
             );
         }
 
@@ -235,8 +282,14 @@ export class WorkerLink {
 
             // Handle response
             if (message.response === 1) {
-                // Call the resolve callback
-                send.resolve(message.data);
+                // If transferable list exists
+                if (transferableList.length !== 0) {
+                    // Call the resolve callback with the data and transferable list
+                    send.resolve({ data: message.data, transferableList: transferableList });
+                } else {
+                    // Call the resolve callback with the data only
+                    send.resolve(message.data);
+                }
             } else {
                 // Call the reject callback with an instance of Error
                 send.reject(new Error(message.data));

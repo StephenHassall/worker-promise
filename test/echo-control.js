@@ -7,7 +7,7 @@ import Test from "./test.js";
 
 export default class EchoControl {
     /**
-     * Run all the SQL convert tests.
+     * Run all the echo control tests.
      */
     static async run() {
         // Set test

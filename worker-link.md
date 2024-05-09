@@ -4,9 +4,9 @@ Transferring data between the control thread and the worker thread is detailed b
 
 ## Send & wait for response
 
-Send and message to the other thread and then wait for a reply.
+Send a message to the other thread and then wait for a reply.
 
-A `send` object is passed from one thread to another. It is stored in a map until the reply message is returned.
+A `send` object is contains information about the message passed from one thread to another. It is stored in the `_sendMap` until the reply message is returned.
 
 ```
 // Send object to store in map
@@ -19,6 +19,7 @@ message.id = Same id value.
 message.type = 0 (send message).
 message.name = The name of the task being performed.
 message.data = The data being sent.
+message.transferable0..n = Reference to a transferable buffer.
 ```
 
 The message returned is like this.
@@ -28,13 +29,14 @@ message.id = The same id value that was sent.
 message.type = 1 (reply message).
 message.response = 1 (resolve), 2 (reject).
 message.data = The data returned.
+message.transferable0..n = Reference to a transferable buffer.
 ```
 
-## Receive & respond (send back reply)
+## Wait, receive & then respond
 
 Wait for messages, get one, process it, then send back response.
 
-A `receive` object waits for a message to be sent to it. It is stored in a map waiting to be used.
+A `receive` object waits for a message to be sent to it. It is stored in a `_receiveMap` waiting to be used.
 
 ```
 receive.name = The name of the task it will perform.
@@ -48,4 +50,5 @@ message.id = The same id value that was sent.
 message.type = 1 (reply message).
 message.response = 1 (resolve), 2 (reject).
 message.data = The data returned.
+message.transferable0..n = Reference to a transferable buffer.
 ```

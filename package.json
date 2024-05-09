@@ -1,19 +1,30 @@
 {
-  "name": "worker-promise",
+  "name": "@coderundebug/worker-promise",
+  "type": "module",
   "version": "1.0.0",
   "description": "Use workers with promises.",
+  "repository": "github:StephenHassall/worker-promise",
+  "funding": "https://github.com/StephenHassall/worker-promise?sponsor=1",
+  "homepage": "https://github.com/StephenHassall/worker-promise",
+  "bugs": {
+    "url": "https://github.com/StephenHassall/worker-promise/issues",
+    "email": "StephenPaulHassall@hotmail.com"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StephenHassall/worker-promise.git"
+  "author": {
+    "name": "Stephen Paul Hassall",
+    "email": "StephenPaulHassall@hotmail.com",
+    "url": "https://coderundebug.com/"
   },
-  "author": "Stephen Paul Hassall",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/StephenHassall/worker-promise/issues"
-  },
-  "homepage": "https://github.com/StephenHassall/worker-promise#readme"
+  "keywords": [
+    "frontend",
+    "promise",
+    "promises",
+    "worker",
+    "workers",
+    "thread"
+  ],
+  "license": "MIT"
 }

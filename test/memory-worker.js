@@ -10,7 +10,7 @@ const workerLink = new WorkerLink();
 /**
  * Receive echo task.
  */
-WorkerPromise.receive(workerLink, 'echo', (data, resolve, reject) => {
+WorkerPromise.receive(workerLink, 'echo', (resolve, reject, data) => {
     // Echo back the same data
     resolve(data);
 });

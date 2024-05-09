@@ -8,7 +8,7 @@ import Test from "./test.js";
 
 export default class ErrorControl {
     /**
-     * Run all the SQL convert tests.
+     * Run all the error control tests.
      */
     static async run() {
         // Set test
@@ -20,7 +20,8 @@ export default class ErrorControl {
         //await ErrorControl.testReject();
         //await ErrorControl.testNothing();
         //await ErrorControl.testResolveTwice();
-        await ErrorControl.testTerminate();
+        //await ErrorControl.testTerminate();
+        await ErrorControl.testMissingTask();
     }
 
     /**
@@ -203,6 +204,34 @@ export default class ErrorControl {
         } catch (e) {
             // Should not get here
             Test.assert();
+        }
+
+        // End worker link
+        workerLink.terminate();
+    }
+
+    /**
+     * Test missing task name.
+     */
+    static async testMissingTask() {
+        // Create worker link
+        const workerLink = new WorkerLink('error-worker.js', import.meta.url);
+
+        // Test resolve twice
+        Test.describe('Missing task');
+
+        // Set error
+        workerLink.error((error) => {
+            // Should not get here
+            Test.assert();
+        });
+
+        try {
+            // Make worker resolve twice
+            let result = await WorkerPromise.send(workerLink, 'missing_task', 'data');
+            Test.assert();
+        } catch (e) {
+            Test.assertEqual(e.message, 'Unknown task name missing_task');
         }
 
         // End worker link

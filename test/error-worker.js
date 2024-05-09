@@ -10,7 +10,7 @@ const workerLink = new WorkerLink();
 /**
  * Receive error task.
  */
-WorkerPromise.receive(workerLink, 'error', (data, resolve, reject) => {
+WorkerPromise.receive(workerLink, 'error', (resolve, reject, data) => {
     // If good then resolve okay
     if (data === 'good') { resolve('okay'); return; }
 
