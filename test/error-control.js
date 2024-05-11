@@ -15,13 +15,14 @@ export default class ErrorControl {
         Test.test('ErrorControl');
 
         // Perform tests
-        //await ErrorControl.testGood();
-        //await ErrorControl.testThrowException();
-        //await ErrorControl.testReject();
-        //await ErrorControl.testNothing();
-        //await ErrorControl.testResolveTwice();
-        //await ErrorControl.testTerminate();
+        await ErrorControl.testGood();
+        await ErrorControl.testThrowException();
+        await ErrorControl.testReject();
+        await ErrorControl.testNothing();
+        await ErrorControl.testResolveTwice();
+        await ErrorControl.testTerminate();
         await ErrorControl.testMissingTask();
+        await ErrorControl.testNoData();
     }
 
     /**
@@ -232,6 +233,35 @@ export default class ErrorControl {
             Test.assert();
         } catch (e) {
             Test.assertEqual(e.message, 'Unknown task name missing_task');
+        }
+
+        // End worker link
+        workerLink.terminate();
+    }
+
+    /**
+     * Test no data name.
+     */
+    static async testNoData() {
+        // Create worker link
+        const workerLink = new WorkerLink('error-worker.js', import.meta.url);
+
+        // Test resolve twice
+        Test.describe('No data');
+
+        // Set error
+        workerLink.error((error) => {
+            // Should not get here
+            Test.assert();
+        });
+
+        try {
+            // Make worker resolve twice
+            let result = await WorkerPromise.send(workerLink, 'error');
+            Test.assertEqual(result, undefined);
+        } catch (e) {
+            // Should not get here
+            Test.assert();
         }
 
         // End worker link

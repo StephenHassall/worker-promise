@@ -14,7 +14,7 @@ export default class TwoWayControl {
         Test.test('TwoWayControl');
 
         // Perform tests
-        //await TwoWayControl.testTwoWay();
+        await TwoWayControl.testTwoWay();
         await TwoWayControl.testTwoWayReject();
     }
 

@@ -14,7 +14,7 @@ export default class DataControl {
         Test.test('DataControl');
 
         // Perform tests
-        //await DataControl.testComplexData();
+        await DataControl.testComplexData();
         await DataControl.testNonSerializableData();
 
         // TODO testRejectData();

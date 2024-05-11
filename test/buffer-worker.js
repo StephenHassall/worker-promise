@@ -18,7 +18,7 @@ WorkerPromise.receive(workerLink, 'single-buffer', (resolve, reject, data, trans
     // Set byte array
     const byteArray = new Uint8Array(transferableList[0]);
 
-    // Incease each byte
+    // Increase each byte
     byteArray[0]++;
     byteArray[1]++;
     byteArray[2]++;

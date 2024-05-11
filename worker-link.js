@@ -63,57 +63,13 @@ export class WorkerLink {
     }
 
     /**
-     * Terminate the worker link. On the control thread this also rejects
-     * any pending promises.
+     * Send data to the other thread to perform a task.
+     * @param {String} name The name of the type of message the data is related to.
+     * @param {Object} [data] The data being sent.
+     * @param {Array} [transferableList] List of buffers that will be transferred.
+     * @return {Promise} Promise to resolve or reject the task being performed.
      */
-    terminate() {
-        // If this is not the control thread
-        if (this._isControlThread === false) {
-            // Close the worker (from within the worker)
-            self.close();
-
-            // Stop here
-            return;
-        }
-
-        // If already terminated
-        if (this._worker === null) return;
-
-        // Stop the worker by terminating the thread
-        this._worker.terminate();
-
-        // Reset to null
-        this._worker = null;
-
-        // Set error
-        const error = new Error('terminated');
-
-        // For each send
-        this._sendMap.forEach((send) => {
-            // Call the reject part of the promise
-            send.reject(error);
-        });
-    }
-
-    /**
-     * Handle any uncaught errors from the worker. This does not include rejected
-     * promises.
-     * @callback callback
-     * @param {String} error The error message from the worker.
-     */
-    error(callback) {
-        // Set error callback
-        this._errorCallback = callback;
-    }
-
-    /**
-     * Post send message.
-     * @param {String} name The name of the task.
-     * @param {Object} data The data to be sent
-     * @param {Array} transferableList List of buffers that will be transferred.
-     * @return {Promise} A promise that will be resolved with the reply data, or rejected with an error.
-     */
-    postSend(name, data, transferableList) {
+    send(name, data, transferableList) {
         // Create send object
         const send = {};
 
@@ -163,13 +119,61 @@ export class WorkerLink {
     }
 
     /**
-     * Add receive wait.
-     * @param {String} name The name of the task to wait for.
-     * @param {function} executor The function that is called when the message is received.
+     * Receive promises from the other thread.
+     * @param {String} name The name of the type of message the data is related to.
+     * @callback executor A callback used to initialize the promise.
+     * @param {function} resolve Call this to resolve the promise.
+     * @param {function} reject Call this to reject the promise.
+     * @param {Object} [data] The data that was past into the send function.
+     * @param {Array} [transferableList] List of buffers that will be transferred.
      */
-    addReceiveWait(name, executor) {
+    receive(name, executor) {
         // Add to receive map
         this._receiveMap.set(name, executor);
+    }
+
+    /**
+     * Terminate the worker link. On the control thread this also rejects
+     * any pending promises.
+     */
+    terminate() {
+        // If this is not the control thread
+        if (this._isControlThread === false) {
+            // Close the worker (from within the worker)
+            self.close();
+
+            // Stop here
+            return;
+        }
+
+        // If already terminated
+        if (this._worker === null) return;
+
+        // Stop the worker by terminating the thread
+        this._worker.terminate();
+
+        // Reset to null
+        this._worker = null;
+
+        // Set error
+        const error = new Error('terminated');
+
+        // For each send
+        this._sendMap.forEach((send) => {
+            // Call the reject part of the promise
+            send.reject(error);
+        });
+    }
+
+    /**
+     * Handle any uncaught errors from the worker. This does not include rejected
+     * promises.
+     * @callback callback
+     * @param {String} error The error message from the worker.
+     */
+    error(callback) {
+        // Set error callback
+        this._errorCallback = callback;
     }
 
     /**

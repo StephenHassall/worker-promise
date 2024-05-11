@@ -14,7 +14,7 @@ export default class BufferControl {
         Test.test('BufferControl');
 
         // Perform tests
-        //await BufferControl.testSingleBuffer();
+        await BufferControl.testSingleBuffer();
         await BufferControl.test3Buffer();
     }
 

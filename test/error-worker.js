@@ -28,4 +28,7 @@ WorkerPromise.receive(workerLink, 'error', (resolve, reject, data) => {
 
     // If terminate
     if (data === 'terminate') { workerLink.terminate(); return; }
+
+    // Resolve with no data
+    resolve();
 });

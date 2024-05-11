@@ -10,10 +10,10 @@ import DataControl from "./data-control.js";
 
 (async () => {
     // Perform tests
-    //await EchoControl.run();
-    //await ErrorControl.run();
-    //await BufferControl.run();
-    //await TwoWayControl.run();
+    await EchoControl.run();
+    await ErrorControl.run();
+    await BufferControl.run();
+    await TwoWayControl.run();
     await DataControl.run();
 
     // Report results
