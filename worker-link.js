@@ -99,9 +99,6 @@ export class WorkerLink {
             send.reject = reject;
         });
 
-        // Add send to the send map
-        this._sendMap.set(send.id, send);
-
         // Increase the message id
         this._messageId++;
 
@@ -113,6 +110,9 @@ export class WorkerLink {
             // Post message back to control thread
             self.postMessage(message, transferableList);
         }
+
+        // Add send to the send map
+        this._sendMap.set(send.id, send);
 
         // Return the promise object
         return promise;
@@ -295,8 +295,17 @@ export class WorkerLink {
                     send.resolve(message.data);
                 }
             } else {
-                // Call the reject callback with an instance of Error
-                send.reject(new Error(message.data));
+                // If the reject data is nothing
+                if (typeof message.data === 'undefined') {
+                    // Call the reject callback with an instance of Error and not data
+                    send.reject(new Error('Worker pormise rejected'));
+                } else if (typeof message.data === 'string') {
+                    // Call the reject callback with an instance of Error and the string data
+                    send.reject(new Error(message.data));
+                } else {
+                    // Call the reject callback with an instance of Error with cause data
+                    send.reject(new Error('Worker pormise rejected', { cause: message.data }));
+                }
             }
 
             // Delete the send from the map

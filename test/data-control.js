@@ -16,8 +16,7 @@ export default class DataControl {
         // Perform tests
         await DataControl.testComplexData();
         await DataControl.testNonSerializableData();
-
-        // TODO testRejectData();
+        await DataControl.testComplexReject();
     }
 
     /**
@@ -76,6 +75,36 @@ export default class DataControl {
             Test.assert();
         } catch (e) {
             Test.assertEqual(e.message, 'Failed to execute \'postMessage\' on \'Worker\': function () { return 42; } could not be cloned.');
+        }
+
+        // End worker link
+        workerLink.terminate();
+    }
+
+    /**
+     * Test complex reject.
+     */
+    static async testComplexReject() {
+        // Create worker link
+        const workerLink = new WorkerLink('data-worker.js', import.meta.url);
+
+        // Set error
+        workerLink.error((error) => {
+            // Should not get here
+            Test.assert();
+        });
+
+        // Test complex data
+        Test.describe('Complex reject');
+        try {
+            let dataReturn = await WorkerPromise.send(workerLink, 'reject-data');
+            Test.assert();
+        } catch (e) {
+            const dataReturn = e.cause;
+            Test.assert(dataReturn);
+            Test.assertEqual(dataReturn.rNumber, 101);
+            Test.assertEqual(dataReturn.rText, 'bad robot');
+            Test.assertEqual(dataReturn.rBoolean, false);
         }
 
         // End worker link

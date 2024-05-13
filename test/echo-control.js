@@ -16,6 +16,7 @@ export default class EchoControl {
         // Perform tests
         await EchoControl.testSingle();
         await EchoControl.testMultiple();
+        await EchoControl.testAsync();
     }
 
     /**
@@ -68,4 +69,19 @@ export default class EchoControl {
         workerLink.terminate();
     }
 
+    /**
+     * Test async.
+     */
+    static async testAsync() {
+        // Create worker link
+        const workerLink = new WorkerLink('echo-worker.js', import.meta.url);
+
+        // Test single (one at a time)
+        Test.describe('Async');
+        let result = await WorkerPromise.send(workerLink, 'echo-async', 'testasync');
+        Test.assertEqual(result, 'testasynctimeout');
+
+        // End worker link
+        workerLink.terminate();
+    }
 }

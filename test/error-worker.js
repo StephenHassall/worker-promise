@@ -20,6 +20,12 @@ WorkerPromise.receive(workerLink, 'error', (resolve, reject, data) => {
     // If reject then call reject (then return)
     if (data === 'reject') { reject('reject error'); return; }
 
+    // If reject-empty then call reject (then return)
+    if (data === 'reject-empty') { reject(); return; }
+
+    // If reject-data then call reject (then return)
+    if (data === 'reject-data') { reject({ text: 'hello', number: 123 }); return; }
+
     // If nothing then just return doing nothing
     if (data === 'nothing') return;
 

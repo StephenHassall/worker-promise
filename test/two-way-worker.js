@@ -46,3 +46,14 @@ WorkerPromise.receive(workerLink, 'control-worker-reject', (resolve, reject, dat
         }
     );
 });
+
+/**
+ * Receive control-worker-async task.
+ */
+WorkerPromise.receive(workerLink, 'control-worker-async', async (resolve, reject, data) => {
+    // Ask the control for some data
+    const result = await WorkerPromise.send(workerLink, 'worker-control-async', data + 'worker');
+
+    // Resolve promise
+    resolve(result + 'result');
+});

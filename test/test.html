@@ -10,6 +10,12 @@
   <p>Look at console for testing progress.</p>
 
   <p>
+    Perform the main tests.
+    <br>
+    <button id="run-tests">Run Tests</button>
+  </p>
+
+  <p>
     Perform a memory test. This transfers 100 promises to the worker, one by one.
     Check the memory used and make sure it is not leaking any.
     <br>
@@ -24,17 +30,34 @@
   </p>
 
 <script type="module">
+  import Test from "./test.js";
+  import EchoControl from "./echo-control.js";
+  import ErrorControl from "./error-control.js";
+  import BufferControl from "./buffer-control.js";
+  import TwoWayControl from "./two-way-control.js";
+  import DataControl from "./data-control.js";
   import MemoryControl from "./memory-control.js";
 
   // Get elements
+  const runTestsElement = document.getElementById('run-tests');
   const oneByOneElement = document.getElementById('one-by-one');
   const parallelElement = document.getElementById('parallel');
 
   // Add click events
+  runTestsElement.addEventListener('click', async () => {
+    // Perform tests
+    await EchoControl.run();
+    await ErrorControl.run();
+    await BufferControl.run();
+    await TwoWayControl.run();
+    await DataControl.run();
+
+    // Report results
+    Test.report();    
+  });
   oneByOneElement.addEventListener('click', () => {
     MemoryControl.testOneByOne();
   });
-
   parallelElement.addEventListener('click', () => {
     MemoryControl.testParallel();
   });

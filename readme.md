@@ -2,7 +2,7 @@
 
 Use workers with promises.
 
-> **Important:** This is an ESM only package, for the browser.
+> **Important:** This is an ESM only package. It uses the browser’s Worker API.
 
 ## Installation
 
@@ -139,7 +139,7 @@ We first create the buffer and set some of the values. We are using the same `se
 
 ```javascript
 // Receive add task
-WorkerPromise.receive(workerLink, 'add, (resolve, reject, data, transferableList) => {
+WorkerPromise.receive(workerLink, 'add', (resolve, reject, data, transferableList) => {
   // Check transferable list is valid
   if (!transferableList) { reject(); }
   if (transferableList.length !== 1) { reject(); }
@@ -284,7 +284,7 @@ const byteArray = new Uint8Array(4);
 const result = await WorkerPromise.send(
   workerLink,
   'set-buffer',
-  { id: 123},
+  { id: 123 },
   [byteArray.buffer]);
 ```
 
@@ -344,7 +344,7 @@ The executor function has the following parameters.
 
 ***Notes***
 
-- You should not `async` the executor function.
+- You can use the `async` keyword with the executor callback function.
 - You must call resolve or reject. Not calling either of them stops the sending promise from moving on and will make it hang.
 - If you call the resolve function more than once then the second time is engorged and any data sent back does nothing.
 
@@ -389,7 +389,7 @@ Here we are creating user data, setting its properties, and resolving the promis
 
 ```javascript
 // Receive add task
-WorkerPromise.receive(workerLink, 'add, (resolve, reject, data) => {
+WorkerPromise.receive(workerLink, 'add', (resolve, reject, data) => {
   // Get the add parts
   const number1 = data.number1;
   const number2 = data.number2;

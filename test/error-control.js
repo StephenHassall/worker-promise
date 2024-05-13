@@ -101,6 +101,26 @@ export default class ErrorControl {
             Test.assertEqual(e.message, 'reject error');
         }
 
+        try {
+            // Make worker reject-empty
+            let result = await WorkerPromise.send(workerLink, 'error', 'reject-empty');
+            Test.assert();
+        } catch (e) {
+            Test.assertEqual(e.message, 'Worker pormise rejected');
+        }
+
+        try {
+            // Make worker reject-data
+            let result = await WorkerPromise.send(workerLink, 'error', 'reject-data');
+            Test.assert();
+        } catch (e) {
+            const data = e.cause;
+            Test.assert(data);
+            Test.assertEqual(e.message, 'Worker pormise rejected');
+            Test.assertEqual(data.text, 'hello');
+            Test.assertEqual(data.number, 123);
+        }
+
         // End worker link
         workerLink.terminate();
     }
