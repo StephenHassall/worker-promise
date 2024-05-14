@@ -11,6 +11,7 @@
     "email": "StephenPaulHassall@hotmail.com"
   },
   "main": "index.js",
+  "types": "./.d.js",
   "scripts": {
   },
   "author": {
