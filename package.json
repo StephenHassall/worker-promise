@@ -1,7 +1,7 @@
 {
   "name": "@coderundebug/worker-promise",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Use workers with promises.",
   "repository": "github:StephenHassall/worker-promise",
   "funding": "https://github.com/StephenHassall/worker-promise?sponsor=1",
@@ -10,7 +10,7 @@
     "url": "https://github.com/StephenHassall/worker-promise/issues",
     "email": "StephenPaulHassall@hotmail.com"
   },
-  "main": "index.js",
+  "browser": "index.js",
   "types": "./.d.js",
   "scripts": {
   },
